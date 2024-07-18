@@ -1,21 +1,44 @@
-const express=require( 'express');
-const dotenv=require( 'dotenv').config()  ;
-const connectDB=require( './config/db.js');
-const cookieParser=require( 'cookie-parser');
-const bodyParser=require( 'body-parser');
-const errorHandler=require( './middleware/errorMiddleware.js');
-const  notFound =require( './middleware/notFound.js');
-const asyncHandler=require('./middleware/asyncHandler.js')
-const userRoutes=require('./routes/userRoutes.js');
+require('dotenv').config();
 
+const express = require('express');
 const app = express();
 
+const cookieParser = require('cookie-parser');
+const bodyParser = require('body-parser');
+
+//database connection
+const connectDB = require('./config/db.js');
+
+// routes middleware
+const errorHandler = require('./middleware/errorMiddleware.js');
+const notFound = require('./middleware/notFound.js');
+
+// extra security packages
+const helmet = require('helmet');
+const cors = require('cors');
+const xss = require('xss-clean');
+const rateLimiter = require('express-rate-limit');
+
+// routes
+const userRoutes = require('./routes/userRoutes.js');
+
+// Middlewares
+app.set('trust proxy', 1);
+app.use(
+  rateLimiter({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100, // limit each IP to 100 requests per windowMs
+  })
+);
+app.use(helmet());
+app.use(cors());
+app.use(xss());
+app.use(cookieParser());
 app.use(express.json());
 app.use(bodyParser.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use(cookieParser());
-
+// Routes
 app.use('/api/v1/auth', userRoutes);
 
 app.get('/', (req, res) => {
@@ -24,7 +47,6 @@ app.get('/', (req, res) => {
 
 app.use(errorHandler);
 app.use(notFound);
-app.use(asyncHandler);
 
 //start server
 const port = process.env.PORT || 5000;

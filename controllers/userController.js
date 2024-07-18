@@ -1,7 +1,7 @@
 const asyncHandler = require('../middleware/asyncHandler.js');
 const User = require('../models/userModel.js');
 const generateToken = require('../utils/generateToken.js');
-const CustomError = require('../errors/index.js');
+const CustomError = require('../errors');
 
 // @desc    Auth user & get token
 // @route   POST /api/users/auth
@@ -35,7 +35,7 @@ const registerUser = asyncHandler(async (req, res) => {
 
   if (userExists) {
     res.status(400);
-    throw new Error('User already exists');
+    throw new CustomError.BadRequestError('User already exists');
   }
 
   const user = await User.create({
