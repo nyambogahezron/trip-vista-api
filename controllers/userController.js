@@ -2,28 +2,7 @@ const asyncHandler = require('../middleware/asyncHandler.js');
 const User = require('../models/userModel.js');
 const generateToken = require('../utils/generateToken.js');
 const CustomError = require('../errors');
-
-// @desc    Auth user & get token
-// @route   POST /api/users/auth
-// @access  Public
-const authUser = asyncHandler(async (req, res) => {
-  const { email, password } = req.body;
-
-  const user = await User.findOne({ email });
-
-  if (user && (await user.matchPassword(password))) {
-    generateToken(res, user._id);
-
-    res.json({
-      _id: user._id,
-      name: user.name,
-      email: user.email,
-    });
-  } else {
-    res.status(401);
-    throw new Error('Invalid email or password');
-  }
-});
+const { StatusCodes } = require('http-status-codes');
 
 // @desc    Register a new user
 // @route   POST /api/users
@@ -34,7 +13,6 @@ const registerUser = asyncHandler(async (req, res) => {
   const userExists = await User.findOne({ email });
 
   if (userExists) {
-    res.status(400);
     throw new CustomError.BadRequestError('User already exists');
   }
 
@@ -47,15 +25,38 @@ const registerUser = asyncHandler(async (req, res) => {
   if (user) {
     generateToken(res, user._id);
 
-    res.status(201).json({
+    res.status(StatusCodes.CREATED).json({
       _id: user._id,
       name: user.name,
       email: user.email,
     });
   } else {
-    res.status(400);
-    throw new Error('Invalid user data');
+    throw new CustomError.BadRequestError('Invalid user data');
   }
+});
+
+// @desc    Auth user & get token
+// @route   POST /api/users/auth
+// @access  Public
+const loginUser = asyncHandler(async (req, res) => {
+  const { email, password } = req.body;
+
+  const user = await User.findOne({ email });
+
+  if (!user) {
+    throw new CustomError.BadRequestError('Invalid email or password');
+  }
+
+  const isPasswordValid = await user.matchPassword(password);
+
+  if (!isPasswordValid) {
+    throw new CustomError.UnauthorizedError('Invalid email or password');
+  }
+
+  // generate token
+  generateToken(res, user._id);
+
+  // res.StatusCodes;
 });
 
 // @desc    Logout user / clear cookie
@@ -66,7 +67,7 @@ const logoutUser = (req, res) => {
     httpOnly: true,
     expires: new Date(0),
   });
-  res.status(200).json({ message: 'Logged out successfully' });
+  res.status(statusCodes.OK).json({ message: 'Logged out successfully' });
 };
 
 // @desc    Get user profile
@@ -114,7 +115,7 @@ const updateUserProfile = asyncHandler(async (req, res) => {
   }
 });
 module.exports = {
-  authUser,
+  loginUser,
   registerUser,
   logoutUser,
   getUserProfile,
