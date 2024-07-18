@@ -7,3 +7,4 @@ class Notfound extends CustomError {
     this.statusCode = StatusCodes.NOT_FOUND;
   }
 }
+export default Notfound;

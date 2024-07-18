@@ -1,6 +1,5 @@
 import { StatusCodes } from 'http-status-codes';
-import CustomAPIError from '../errors';
-
+import { CustomAPIError} from '../errors/index.js';
 
 const notFound = (req, res, next) => {
   const error = new Error(`Not Found - ${req.originalUrl}`);

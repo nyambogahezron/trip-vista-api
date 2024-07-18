@@ -1,4 +1,4 @@
-import CustomError from './customError';
+import CustomError from './customError.js';
 import { StatusCodes } from 'http-status-codes';
 
 class UnauthenticatedError extends CustomError {
@@ -7,4 +7,4 @@ class UnauthenticatedError extends CustomError {
     this.statusCode = StatusCodes.UNAUTHORIZED;
   }
 }
-module.exports = UnauthenticatedError;
+export default UnauthenticatedError;
