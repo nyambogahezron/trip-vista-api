@@ -1,6 +1,7 @@
-import asyncHandler from 'express-async-handler';
-import User from '../models/userModel.js';
-import generateToken from '../utils/generateToken.js';
+const asyncHandler = require('../middleware/asyncHandler.js');
+const User = require('../models/userModel.js');
+const generateToken = require('../utils/generateToken.js');
+const CustomError = require('../errors/index.js');
 
 // @desc    Auth user & get token
 // @route   POST /api/users/auth
@@ -107,13 +108,12 @@ const updateUserProfile = asyncHandler(async (req, res) => {
       name: updatedUser.name,
       email: updatedUser.email,
     });
-    
   } else {
     res.status(404);
     throw new Error('User not found');
   }
 });
-export {
+module.exports = {
   authUser,
   registerUser,
   logoutUser,

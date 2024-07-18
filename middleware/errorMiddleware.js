@@ -1,18 +1,11 @@
-import { StatusCodes } from 'http-status-codes';
-import { CustomAPIError} from '../errors/index.js';
-
-const notFound = (req, res, next) => {
-  const error = new Error(`Not Found - ${req.originalUrl}`);
-  res.status(404).send('Route does not exist');
-  next(error);
-};
+const { StatusCodes } = require( 'http-status-codes');
+const CustomAPIError = require( '../errors/index.js');
 
 const errorHandler = (err, req, res, next) => {
-  console.log(err.stack);
-
+  // Default error
   let customError = {
     statusCode: err.statusCode || StatusCodes.INTERNAL_SERVER_ERROR,
-    message: err.message || 'something went wrong, please try again!',
+    msg: err.message || 'Something went wrong try again later',
   };
 
   if (err instanceof CustomAPIError) {
@@ -45,4 +38,4 @@ const errorHandler = (err, req, res, next) => {
   });
 };
 
-export { notFound, errorHandler };
+module.exports = errorHandler;
