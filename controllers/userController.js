@@ -23,13 +23,10 @@ const registerUser = asyncHandler(async (req, res) => {
   });
 
   if (user) {
-    generateToken(res, user._id);
+    const token = generateToken(res, user._id);
+    user.password = undefined;
 
-    res.status(StatusCodes.CREATED).json({
-      _id: user._id,
-      name: user.name,
-      email: user.email,
-    });
+    res.status(StatusCodes.CREATED).json({ user, token });
   } else {
     throw new CustomError.BadRequestError('Invalid user data');
   }
@@ -54,9 +51,11 @@ const loginUser = asyncHandler(async (req, res) => {
   }
 
   // generate token
-  generateToken(res, user._id);
+  const token = generateToken(res, user._id);
 
-  // res.StatusCodes;
+  user.password = undefined; // remove password from the response
+
+  res.status(StatusCodes.OK).json({ user, token });
 });
 
 // @desc    Logout user / clear cookie
