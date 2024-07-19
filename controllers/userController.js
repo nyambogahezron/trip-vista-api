@@ -66,7 +66,7 @@ const logoutUser = (req, res) => {
     httpOnly: true,
     expires: new Date(0),
   });
-  res.status(statusCodes.OK).json({ message: 'Logged out successfully' });
+  res.status(StatusCodes.OK).json({ message: 'Logged out successfully' });
 };
 
 // @desc    Get user profile
@@ -83,7 +83,7 @@ const getUserProfile = asyncHandler(async (req, res) => {
     });
   } else {
     res.status(404);
-    throw new Error('User not found');
+    throw new CustomError.NotFoundError('User not found');
   }
 });
 
@@ -109,8 +109,7 @@ const updateUserProfile = asyncHandler(async (req, res) => {
       email: updatedUser.email,
     });
   } else {
-    res.status(404);
-    throw new Error('User not found');
+    throw new CustomError.NotFoundError('User not found');
   }
 });
 module.exports = {
