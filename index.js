@@ -21,6 +21,8 @@ const rateLimiter = require('express-rate-limit');
 
 // routes
 const userRoutes = require('./routes/userRoutes.js');
+const listingRoutes = require('./routes/listingRoutes.js');
+const travelGroupsRoutes = require('./routes/travelGroupsRoutes.js');
 
 // Middlewares
 app.set('trust proxy', 1);
@@ -40,6 +42,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // Routes
 app.use('/api/v1/auth', userRoutes);
+app.use('/api/v1/listing', listingRoutes);
+app.use('/api/v1/travelGroup', travelGroupsRoutes);
 
 app.get('/', (req, res) => {
   res.send('API is running....');
