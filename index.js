@@ -1,6 +1,7 @@
 require('dotenv').config();
 
 const express = require('express');
+const path = require('path');
 const app = express();
 
 const cookieParser = require('cookie-parser');
@@ -48,6 +49,9 @@ app.use('/api/v1/travelGroup', travelGroupsRoutes);
 app.get('/', (req, res) => {
   res.send('API is running....');
 });
+
+// Serve static files 
+app.use('/uploads', express.static(path.join(__dirname, '/public/uploads')));
 
 app.use(errorHandler);
 app.use(notFound);

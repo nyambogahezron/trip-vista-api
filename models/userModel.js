@@ -14,11 +14,11 @@ const userSchema = mongoose.Schema(
     },
     avatar: {
       type: String,
-      default: 'https://res.cloudinary',
+      default: 'http://localhost:5000/uploads/user.png',
     },
     role: {
       type: String,
-      enum: ['user, admin'],
+      enum: ['user', 'admin'],
       default: 'user',
     },
     password: {
