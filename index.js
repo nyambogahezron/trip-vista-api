@@ -7,6 +7,11 @@ const app = express();
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 
+//swagger
+const swaggerUi = require('swagger-ui-express');
+const YAML = require('yamljs');
+const swaggerDocument = YAML.load('./swagger.yaml');
+
 //database connection
 const connectDB = require('./config/db.js');
 
@@ -47,10 +52,13 @@ app.use('/api/v1/listing', listingRoutes);
 app.use('/api/v1/travelGroup', travelGroupsRoutes);
 
 app.get('/', (req, res) => {
-  res.send('API is running....');
+   res.send('<h1>TRIP-VISTA API</h1><a href="/api-docs">Documentation</a>');
 });
 
-// Serve static files 
+// api documentation
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
+// Serve static files
 app.use('/uploads', express.static(path.join(__dirname, '/public/uploads')));
 
 app.use(errorHandler);
