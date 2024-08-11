@@ -1,4 +1,6 @@
 const express = require('express');
+const upload = require('../utils/fileUpload');
+
 const {
   loginUser,
   registerUser,
@@ -10,7 +12,7 @@ const { protect } = require('../middleware/authMiddleware.js');
 
 const router = express.Router();
 
-router.post('/register', registerUser);
+router.post('/register',upload.single('avatar'), registerUser);
 router.post('/login', loginUser);
 router.post('/logout', logoutUser);
 router

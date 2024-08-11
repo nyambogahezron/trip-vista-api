@@ -14,11 +14,19 @@ const userSchema = mongoose.Schema(
     },
     avatar: {
       type: String,
+<<<<<<< HEAD
       default: 'https://res.cloudinary',
     },
     role: {
       type: String,
       enum: ['user, admin'],
+=======
+      default: 'http://localhost:5000/uploads/user.png',
+    },
+    role: {
+      type: String,
+      enum: ['user', 'admin'],
+>>>>>>> refs/remotes/origin/main
       default: 'user',
     },
     password: {

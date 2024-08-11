@@ -16,10 +16,34 @@ const registerUser = asyncHandler(async (req, res) => {
     throw new CustomError.BadRequestError('User already exists');
   }
 
+  if (!name || !email || !password) {
+    throw new CustomError.BadRequestError('Please provide all fields');
+  }
+
+  if (password?.length < 6) {
+    throw new CustomError.BadRequestError(
+      'Password must be at least 6 characters'
+    );
+  }
+
+  const avatarPath = req.file?.path;
+
+  const avatar = 'http://localhost:5000' + avatarPath;
+
+  if (avatar) {
+    console.log(avatar);
+  }
+
+  // Check if the user is the first user
+  const userCount = await User.countDocuments();
+  const role = userCount === 0 ? 'admin' : 'user';
+
   const user = await User.create({
     name,
     email,
     password,
+    avatar,
+    role,
   });
 
   if (user) {
